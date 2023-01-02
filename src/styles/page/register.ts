@@ -1,4 +1,4 @@
-import { Box, styled, TextInput } from "@ignite-ui/react";
+import { Box, styled, } from "@ignite-ui/react";
 import { Text, Heading, Button } from '@ignite-ui/react'
 export const RegisterContainer = styled('main', {
     maxWidth: 572,
@@ -39,13 +39,19 @@ export const RegisterForm = styled(Box, {
 
     'label + label': {
         marginTop: '$4',
-        color: 'red',
     },
 
     [` > ${Button}`]: {
         marginTop: '$4',
     },
 
+    '> label + p': {
+        color: 'blue',
+    }
 
+})
 
-})  
+export const FormErrorMessage = styled(Text, {
+    marginTop: '$2',
+    color: '#dc2626',
+})

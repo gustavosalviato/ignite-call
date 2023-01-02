@@ -1,7 +1,31 @@
-import { Header, RegisterContainer, RegisterForm } from "../../styles/page/register";
+import { Header, RegisterContainer, RegisterForm, FormErrorMessage } from "../../styles/page/register";
 import { Heading, Text, MultiStep, TextInput, Button } from '@ignite-ui/react'
 import { ArrowRight } from 'phosphor-react'
+import { useForm } from "react-hook-form";
+import * as zod from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from "zod";
+
+const RegisterFormSchema = zod.object({
+    username: zod.string()
+        .min(3, {
+            message: 'Usário deve conter pelo menos 3 letras'
+        })
+        .regex(/^([a-z\\-]+)$/i, { message: 'Usuário deve conter apenas letras e hifens' }),
+    name: zod.string().min(3, { message: 'Nome deve conter pelo menos 3 letras' })
+})
+
+export type RegisterFormData = z.infer<typeof RegisterFormSchema>
+
 export default function Register() {
+
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormData>({
+        resolver: zodResolver(RegisterFormSchema)
+    })
+
+    async function handleSubmitRegisterForm(data: RegisterFormData) {
+        console.log(data)
+    }
     return (
         <RegisterContainer>
             <Header>
@@ -10,14 +34,19 @@ export default function Register() {
                 <MultiStep size={4} currentStep={1} />
             </Header>
 
-            <RegisterForm as="form">
+            <RegisterForm as="form" onSubmit={handleSubmit(handleSubmitRegisterForm)}>
                 <label>
                     <Text>Nome do usuário</Text>
                     <TextInput
                         placeholder="seu usuário"
                         size='md'
                         prefix="call.com/"
+                        {...register('username')}
                     />
+
+                    {errors.username && (
+                        <FormErrorMessage size="sm">{errors.username.message}</FormErrorMessage>
+                    )}
                 </label>
 
                 <label>
@@ -25,9 +54,13 @@ export default function Register() {
                     <TextInput
                         placeholder="Nome completo"
                         size='md'
+                        {...register('name')}
                     />
+                    {errors.name && (
+                        <FormErrorMessage size="sm">{errors.name.message}</FormErrorMessage>
+                    )}
                 </label>
-                <Button>
+                <Button disabled={isSubmitting}>
                     Próximo Passo
                     <ArrowRight size={16} />
                 </Button>
