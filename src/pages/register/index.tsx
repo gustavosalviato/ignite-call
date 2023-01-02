@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import * as zod from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from "zod";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const RegisterFormSchema = zod.object({
     username: zod.string()
@@ -19,13 +21,24 @@ export type RegisterFormData = z.infer<typeof RegisterFormSchema>
 
 export default function Register() {
 
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormData>({
-        resolver: zodResolver(RegisterFormSchema)
+    const router = useRouter()
+
+    const { setValue, register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormData>({
+        resolver: zodResolver(RegisterFormSchema),
     })
 
     async function handleSubmitRegisterForm(data: RegisterFormData) {
         console.log(data)
     }
+
+
+
+    useEffect(() => {
+        if (router.query.username) {
+            setValue('username', String(router.query.username))
+        }
+    }, [setValue, router.query?.username])
+
     return (
         <RegisterContainer>
             <Header>

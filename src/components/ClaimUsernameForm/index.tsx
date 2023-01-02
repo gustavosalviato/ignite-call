@@ -3,6 +3,7 @@ import { TextInput, Button, Text } from '@ignite-ui/react'
 import { useForm } from "react-hook-form";
 import * as zod from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from "next/router";
 
 const ClaimUsernameFormSchema = zod.object({
     username:
@@ -17,12 +18,16 @@ export type ClaimUsernameFormData = zod.infer<typeof ClaimUsernameFormSchema>
 
 export function ClaimUsernameForm() {
 
-    const { register, handleSubmit, formState: { errors } } = useForm<ClaimUsernameFormData>({
+    const router = useRouter()
+
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<ClaimUsernameFormData>({
         resolver: zodResolver(ClaimUsernameFormSchema)
     })
 
-    function handleClaimUsername(data: ClaimUsernameFormData) {
-        console.log(data)
+    async function handleClaimUsername(data: ClaimUsernameFormData) {
+        const { username } = data
+
+        await router.push(`/register?username=${username}`)
     }
     return (
         <>
@@ -33,7 +38,7 @@ export function ClaimUsernameForm() {
                     size="md"
                     {...register('username')}
                 />
-                <Button>
+                <Button disabled={isSubmitting}>
                     Reservar Usuário
                 </Button>
             </Form>
