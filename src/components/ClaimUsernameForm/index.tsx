@@ -13,7 +13,7 @@ const ClaimUsernameFormSchema = zod.object({
     })
     .regex(/^([a-z\\-]+)$/i, {
       message: 'Usuário deve conter apenas letras e hifens',
-    })
+    }),
 })
 
 export type ClaimUsernameFormData = zod.infer<typeof ClaimUsernameFormSchema>

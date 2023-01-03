@@ -13,6 +13,7 @@ import { z } from 'zod'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { api } from '../../libs/api'
+import { AxiosError } from 'axios'
 
 const RegisterFormSchema = zod.object({
   username: zod
@@ -44,16 +45,19 @@ export default function Register() {
   })
 
   async function handleSubmitRegisterForm(data: RegisterFormData) {
-
     try {
       await api.post('/register', {
         name: data.name,
-        username: data.username
+        username: data.username,
       })
     } catch (err) {
+      if (err instanceof AxiosError && err?.response?.data?.message) {
+        alert(err?.response?.data?.message)
+        return
+      }
+
       console.log(err)
     }
-
   }
 
   useEffect(() => {
