@@ -13,4 +13,5 @@ export const globalStyles = globalCss({
     '-webkit-font-smoothing': 'antialiased',
     fontWeight: 400,
   },
+
 })
