@@ -1,7 +1,7 @@
 import { Heading, Text, MultiStep, Button } from "@ignite-ui/react";
 import { ArrowRight } from "phosphor-react";
 import { Container, Header, Modal, ModalItem, } from "./styles";
-
+import { signIn } from 'next-auth/react'
 export default function ConnectCalendar() {
     return (
         <Container>
@@ -20,13 +20,14 @@ export default function ConnectCalendar() {
                         <Button
                             size="sm"
                             variant="secondary"
+                            onClick={() => signIn('google')}
                         >
                             Conectar
                             <ArrowRight size={16} />
                         </Button>
                     </ModalItem>
 
-                    <Button>
+                    <Button >
                         Próximo passo
                         <ArrowRight size={16} />
                     </Button>

@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { api } from '../../libs/api'
 import { AxiosError } from 'axios'
+import { signIn } from 'next-auth/react'
 
 const RegisterFormSchema = zod.object({
   username: zod
