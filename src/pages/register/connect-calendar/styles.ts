@@ -44,3 +44,8 @@ export const ModalItem = styled('div', {
 
 })
 
+export const AuthError = styled(Text, {
+    color: '#dc2626',
+    marginBottom: '$2'
+})
+
