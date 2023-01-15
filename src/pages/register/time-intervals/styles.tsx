@@ -1,5 +1,5 @@
 import { styled } from "@ignite-ui/react"
-
+import { Text } from "@ignite-ui/react"
 export const BoxContainer = styled("div", {
   display: "flex",
   padding: "$6",
@@ -42,4 +42,9 @@ export const BoxTime = styled("div", {
   "input::-webkit-calendar-picker-indicator": {
     filter: "invert(100%) brightness(30%)",
   },
+})
+
+export const FormErrorMessage = styled(Text, {
+  marginBottom: "$4",
+  color: "#dc2626",
 })
