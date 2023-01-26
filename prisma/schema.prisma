@@ -16,10 +16,12 @@ model User {
   name       String
   email      String?  @unique
   avatar_url String?
+  bio        String?
   created_at DateTime @default(now())
 
-  accounts Account[]
-  sessions Session[]
+  accounts      Account[]
+  sessions      Session[]
+  timeIntervals UserTimeIntevals[]
 
   @@map("users")
 }
@@ -51,5 +53,17 @@ model Session {
   expires       DateTime
   user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  @@map("sesssions")
+  @@map("sessions")
+}
+
+model UserTimeIntevals {
+  id                    String @id @default(uuid())
+  week_day              Int
+  start_time_in_minutes Int
+  end_time_in_minutes   Int
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  @@map("user_time_intervals")
 }

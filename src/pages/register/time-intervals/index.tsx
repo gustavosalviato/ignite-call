@@ -20,6 +20,11 @@ import {
 } from "./styles"
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { covertTimeStringToMinutes } from "../../../utils/convert-time-string-to-minutes"
+import { api } from "../../../libs/api"
+import { getSession } from "next-auth/react"
+
+import { GetServerSideProps } from "next"
 
 const timeIntervalsFormSchema = z.object({
   intervals: z
@@ -35,10 +40,23 @@ const timeIntervalsFormSchema = z.object({
     .transform((intervals) => intervals.filter((interval) => interval.enabled))
     .refine((intervals) => intervals.length > 0, {
       message: "Você precisa selecionar pelo menos um dia da semana!",
-    }),
+    })
+    .transform((intervals) => {
+      return intervals.map((interval) => {
+        return {
+          weekDay: interval.weekDay,
+          startTimeInMinutes: covertTimeStringToMinutes(interval.startTime),
+          endTimeInMinutes: covertTimeStringToMinutes(interval.endTime),
+        }
+      })
+    })
+    .refine((intervals) => {
+      return intervals.every((interval) => interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes)
+    }, { message: 'O horário de término deve se pelos menos 1h distante do início' })
 })
 
-type IntervalsFormData = z.infer<typeof timeIntervalsFormSchema>
+type timeIntervalsInput = z.input<typeof timeIntervalsFormSchema>
+type timeIntervalsOutput = z.output<typeof timeIntervalsFormSchema>
 
 export default function TimeIntervals() {
   const {
@@ -47,7 +65,7 @@ export default function TimeIntervals() {
     control,
     watch,
     formState: { isSubmitting, errors },
-  } = useForm({
+  } = useForm<timeIntervalsInput>({
     defaultValues: {
       intervals: [
         { weekDay: 0, enabled: false, startTime: "08:00", endTime: "16:00" },
@@ -69,9 +87,17 @@ export default function TimeIntervals() {
 
   const watchIntervals = watch("intervals")
 
-  function handleSubmitIntervalsForm(data: IntervalsFormData) {
-    console.log(data)
+  async function handleSubmitIntervalsForm(data: any) {
+    const { intervals } = data as timeIntervalsOutput
+
+    try {
+      await api.post('/time-intervals', { intervals })
+
+    } catch (err) {
+      alert(err)
+    }
   }
+
 
   const weekDay = getWeekDays()
   return (
@@ -136,7 +162,9 @@ export default function TimeIntervals() {
             {errors.intervals.message}
           </FormErrorMessage>
         )}
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit"
+
+          disabled={isSubmitting}>
           Próximo Passo <ArrowRight />
         </Button>
       </BoxContainer>

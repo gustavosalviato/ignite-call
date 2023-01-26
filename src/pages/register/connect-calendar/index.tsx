@@ -20,6 +20,10 @@ export default function ConnectCalendar() {
     await signIn("google")
   }
 
+  async function handleGoToTimeIntervals() {
+    await router.push('/register/time-intervals')
+  }
+
   return (
     <Container>
       <Header>
@@ -59,7 +63,9 @@ export default function ConnectCalendar() {
             </AuthError>
           )}
 
-          <Button disabled={!isSignedIn}>
+          <Button
+            onClick={handleGoToTimeIntervals}
+            disabled={!isSignedIn}>
             Próximo passo
             <ArrowRight size={16} />
           </Button>
