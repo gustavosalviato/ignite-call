@@ -3,7 +3,7 @@ import { ConfirmForm } from "./ConfirmForm"
 
 export function ScheduleForm() {
   return (
-    // <CalendarStep />
-    <ConfirmForm />
+    <CalendarStep />
+    // <ConfirmForm />
   )
 }

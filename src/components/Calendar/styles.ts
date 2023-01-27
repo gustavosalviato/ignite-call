@@ -1,5 +1,4 @@
 import { styled, Text } from "@ignite-ui/react";
-import { FontLoaderManifestPlugin } from "next/dist/build/webpack/plugins/font-loader-manifest-plugin";
 
 export const CalendarContainer = styled('div', {
   display: 'flex',
@@ -16,6 +15,7 @@ export const CalendarHeader = styled('div', {
 
 export const CalendarTitle = styled(Text, {
   fontWeight: 'medium',
+  textTransform: 'capitalize',
 
   'span': {
     color: '$red',

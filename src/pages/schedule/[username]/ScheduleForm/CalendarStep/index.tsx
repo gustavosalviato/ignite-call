@@ -2,7 +2,8 @@ import { Calendar } from "../../../../../components/Calendar";
 import { Container, TimePicker, TimePickerHeader, TimePickerItem, TimePickerList } from "./styles";
 
 export function CalendarStep() {
-  const isTimePickerOpen = true
+
+  const isTimePickerOpen = false
   return (
     <Container isTimePickerOpen={isTimePickerOpen}>
       <Calendar />
