@@ -1,4 +1,5 @@
 import { Box, styled, Text, Heading, Button } from '@ignite-ui/react'
+
 export const RegisterContainer = styled('main', {
   maxWidth: 572,
   padding: '0 $4',
