@@ -5,9 +5,14 @@ import { api } from "../../../../../libs/api";
 import { Container, TimePicker, TimePickerHeader, TimePickerItem, TimePickerList } from "./styles";
 import { useRouter } from 'next/router'
 
+interface Availability {
+  possibleTimes: number[]
+  availableTimes: number[]
+}
+
 export function CalendarStep() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-
+  const [availability, setAvailability] = useState<Availability | null>(null)
 
   const isTimePickerOpen = !!selectedDate
 
@@ -18,21 +23,24 @@ export function CalendarStep() {
 
   const username = String(router.query.username)
 
-  async function getAvailabilityTimes() {
-    const res = await api.get(`/users/${username}/availability`, {
-      params: {
-        date: dayjs(selectedDate).format('YYYY-MM-DD'),
-      }
-    })
-
-    console.log(res.data)
+  async function getAvaiableTimes() {
+    try {
+      const res = await api.get(`/users/${username}/availability`, {
+        params: {
+          date: dayjs(selectedDate).format('YYYY-MM-DD'),
+        }
+      })
+      setAvailability(res.data)
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   useEffect(() => {
     if (!selectedDate) {
       return
     }
-    getAvailabilityTimes()
+    getAvaiableTimes()
   }, [selectedDate, username])
 
   return (
@@ -48,9 +56,15 @@ export function CalendarStep() {
             {weekDay}, <span>{describedDate}</span>
 
             <TimePickerList>
-              <TimePickerItem>
-                9:00h
-              </TimePickerItem>
+              {availability?.possibleTimes.map((hour) => {
+                return (
+                  <TimePickerItem
+                    disabled={!availability.availableTimes.includes(hour)}
+                  >
+                    {String(hour).padStart(2, '0')}:00h
+                  </TimePickerItem>
+                )
+              })}
             </TimePickerList>
           </TimePickerHeader>
         </TimePicker>
