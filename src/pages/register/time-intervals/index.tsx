@@ -22,10 +22,7 @@ import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { covertTimeStringToMinutes } from "../../../utils/convert-time-string-to-minutes"
 import { api } from "../../../libs/api"
-import { getSession } from "next-auth/react"
-
-import { GetServerSideProps } from "next"
-
+import { useRouter } from 'next/router'
 const timeIntervalsFormSchema = z.object({
   intervals: z
     .array(
@@ -59,6 +56,7 @@ type timeIntervalsInput = z.input<typeof timeIntervalsFormSchema>
 type timeIntervalsOutput = z.output<typeof timeIntervalsFormSchema>
 
 export default function TimeIntervals() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -92,14 +90,16 @@ export default function TimeIntervals() {
 
     try {
       await api.post('/time-intervals', { intervals })
-
     } catch (err) {
       alert(err)
     }
   }
 
-
   const weekDay = getWeekDays()
+
+  async function handleGoToUpdateProfile() {
+    await router.push('/register/update-profile')
+  }
   return (
     <Container>
       <Header>
@@ -162,9 +162,12 @@ export default function TimeIntervals() {
             {errors.intervals.message}
           </FormErrorMessage>
         )}
-        <Button type="submit"
 
-          disabled={isSubmitting}>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          onClick={handleGoToUpdateProfile}
+        >
           Próximo Passo <ArrowRight />
         </Button>
       </BoxContainer>

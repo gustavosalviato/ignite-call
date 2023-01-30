@@ -39,8 +39,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return !availableWeekDays.some((availableWeekDay) => availableWeekDay.week_day === weekDay)
   })
 
+  const blockedDatesRaw: Array<{ date: number }> = await prisma.$queryRaw`
+  SELECT
+    EXTRACT(DAY FROM S.DATE) AS date,
+    COUNT(S.date) AS amount,
+    ((UTI.end_time_in_minutes - UTI.start_time_in_minutes) / 60) AS size
+  FROM schedulings S
+  LEFT JOIN user_time_intervals UTI
+    ON UTI.week_day = WEEKDAY(DATE_ADD(S.date, INTERVAL 1 DAY))
+  WHERE S.user_id = ${user.id}
+    AND DATE_FORMAT(S.date, "%Y-%m") = ${`${year}-${month}`}
+  GROUP BY EXTRACT(DAY FROM S.DATE),
+    ((UTI.end_time_in_minutes - UTI.start_time_in_minutes) / 60)
+  HAVING amount >= size
+`
+
+  const blockedDates = blockedDatesRaw.map((item) => item.date)
+
   return res.json({
-    blockedWeekDays
+    blockedWeekDays,
+    blockedDates
   })
 
 } 

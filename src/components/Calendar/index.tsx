@@ -24,6 +24,7 @@ interface CalendarProps {
 
 interface BlockedDates {
   blockedWeekDays: number[]
+  blockedDates: number[]
 }
 
 export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
@@ -31,6 +32,10 @@ export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(() => {
     return dayjs().set('date', 1)
   })
+
+  const formattedCurrentMonth = currentDate.format('MM')
+
+  console.log(formattedCurrentMonth)
 
   const router = useRouter()
 
@@ -51,19 +56,24 @@ export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
     setCurrentDate(nextMonth)
   }
 
-  const { data: blockedDates } = useQuery<BlockedDates>(['blockedDates', currentDate.get('year'), currentDate.get('month')],
-  async () => {
-    const res = await api.get(`/users/${username}/blocked-dates`, {
-      params: {
-        year: currentDate.get('year'),
-        month: currentDate.get('month')
-      }
+  const { data: blockedDates } = useQuery<BlockedDates>(['blockedDates', currentDate.get('year'), currentDate.get('month') + 1],
+    async () => {
+      const res = await api.get(`/users/${username}/blocked-dates`, {
+        params: {
+          year: currentDate.get('year'),
+          month: formattedCurrentMonth
+
+        }
+      })
+
+      return res.data
     })
 
-    return res.data
-  })
-
   const calendarWeeks = useMemo(() => {
+    if (!blockedDates) {
+      return []
+    }
+
     const daysInMonthArray = Array.from({
       length: currentDate.daysInMonth(),
     }).map((_, i) => {
@@ -99,6 +109,8 @@ export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
           date, disabled: date.endOf('day').isBefore(new Date())
             ||
             blockedDates?.blockedWeekDays.includes(date.get('day'))
+            ||
+            blockedDates.blockedDates.includes(date.get('date'))
         }
       }),
       ...nextMonthFillArray.map((date) => {
@@ -119,11 +131,7 @@ export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
     }, [])
 
     return calendarWeeks
-  }, [currentDate])
-
-
-
-
+  }, [currentDate, blockedDates])
 
   return (
     <CalendarContainer>
@@ -169,23 +177,6 @@ export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
               </tr>
             )
           })}
-          {/* <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <CalendarDay>
-                1
-              </CalendarDay>
-            </td>
-            <td>
-              <CalendarDay>
-                1
-              </CalendarDay>
-            </td>
-          </tr> */}
         </tbody>
       </CalendarBody>
     </CalendarContainer>
