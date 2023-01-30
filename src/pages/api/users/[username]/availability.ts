@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
 
 
-  if (!username) {
+  if (!user) {
     return res.status(404).json({ message: 'User does not exists' })
   }
 

@@ -3,6 +3,9 @@ import { CaretLeft, CaretRight } from "phosphor-react";
 import { useMemo, useState } from "react";
 import { getWeekDays } from "../../utils/get-week-days";
 import { CalendarActions, CalendarBody, CalendarContainer, CalendarDay, CalendarHeader, CalendarTitle } from "./styles";
+import { useRouter } from 'next/router'
+import { api } from "../../libs/api";
+import { useQuery } from "@tanstack/react-query";
 
 interface CalendarWeek {
   week: number,
@@ -19,11 +22,19 @@ interface CalendarProps {
   onSelectedDate: (date: Date) => void
 }
 
+interface BlockedDates {
+  blockedWeekDays: number[]
+}
+
 export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
   const shortWeekDays = getWeekDays({ short: true })
   const [currentDate, setCurrentDate] = useState(() => {
     return dayjs().set('date', 1)
   })
+
+  const router = useRouter()
+
+  const username = String(router.query.username)
 
   const currentMonth = currentDate.format('MMMM')
   const currentYear = currentDate.format('YYYY')
@@ -39,6 +50,18 @@ export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
 
     setCurrentDate(nextMonth)
   }
+
+  const { data: blockedDates } = useQuery<BlockedDates>(['blockedDates', currentDate.get('year'), currentDate.get('month')],
+  async () => {
+    const res = await api.get(`/users/${username}/blocked-dates`, {
+      params: {
+        year: currentDate.get('year'),
+        month: currentDate.get('month')
+      }
+    })
+
+    return res.data
+  })
 
   const calendarWeeks = useMemo(() => {
     const daysInMonthArray = Array.from({
@@ -72,7 +95,11 @@ export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
         return { date, disabled: true }
       }),
       ...daysInMonthArray.map((date) => {
-        return { date, disabled: date.endOf('day').isBefore(new Date()) }
+        return {
+          date, disabled: date.endOf('day').isBefore(new Date())
+            ||
+            blockedDates?.blockedWeekDays.includes(date.get('day'))
+        }
       }),
       ...nextMonthFillArray.map((date) => {
         return { date, disabled: true }
@@ -93,6 +120,9 @@ export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
 
     return calendarWeeks
   }, [currentDate])
+
+
+
 
 
   return (
