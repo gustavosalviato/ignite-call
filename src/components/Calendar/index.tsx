@@ -18,7 +18,7 @@ interface CalendarWeek {
   week: number
   days: Array<{
     date: dayjs.Dayjs
-    disabled: true
+    disabled: boolean
   }>
 }
 
