@@ -18,7 +18,7 @@ interface Availability {
 }
 
 interface CalendarStepProps {
-  onSelectDate?: (date: Date) => void
+  onSelectDate: (date: Date) => void
 }
 
 export function CalendarStep({ onSelectDate }: CalendarStepProps) {
@@ -47,9 +47,6 @@ export function CalendarStep({ onSelectDate }: CalendarStepProps) {
           date: selectedDateWithoutTime,
         },
       })
-
-      console.log(res.data)
-
       return res.data
     },
     {
@@ -62,8 +59,6 @@ export function CalendarStep({ onSelectDate }: CalendarStepProps) {
       .set('hour', hour)
       .startOf('hour')
       .toDate()
-
-    console.log(dateWithTime)
 
     onSelectDate(dateWithTime)
   }
