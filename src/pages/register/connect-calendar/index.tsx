@@ -4,6 +4,7 @@ import { AuthError, Container, Header, Modal, ModalItem } from "./styles"
 import { signIn } from "next-auth/react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/router"
+import { NextSeo } from "next-seo"
 
 export default function ConnectCalendar() {
   const router = useRouter()
@@ -23,52 +24,55 @@ export default function ConnectCalendar() {
   }
 
   return (
-    <Container>
-      <Header>
-        <Heading>Conecte sua agenda!</Heading>
+    <>
+      <NextSeo title="Conecte sua agenda do Google | Ignite Call" noindex />
+      <Container>
+        <Header>
+          <Heading>Conecte sua agenda!</Heading>
 
-        <Text>
-          Conecte o seu calendário para verificar automaticamente as horas
-          ocupadas e os novos eventos à medida em que são agendados.
-        </Text>
+          <Text>
+            Conecte o seu calendário para verificar automaticamente as horas
+            ocupadas e os novos eventos à medida em que são agendados.
+          </Text>
 
-        <MultiStep size={4} currentStep={2} />
+          <MultiStep size={4} currentStep={2} />
 
-        <Modal>
-          <ModalItem>
-            <Text>Google Agenda</Text>
-            {isSignedIn ? (
-              <Button size="sm" variant="secondary" disabled>
-                Conectado
-                <Check size={16} />
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={handleConnectCalendar}
-              >
-                Conectar
-                <ArrowRight size={16} />
-              </Button>
+          <Modal>
+            <ModalItem>
+              <Text>Google Agenda</Text>
+              {isSignedIn ? (
+                <Button size="sm" variant="secondary" disabled>
+                  Conectado
+                  <Check size={16} />
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={handleConnectCalendar}
+                >
+                  Conectar
+                  <ArrowRight size={16} />
+                </Button>
+              )}
+            </ModalItem>
+
+            {hasAuthError && (
+              <AuthError size="sm">
+                Falha ao se conectar ao Google, verifique se você habilitou as
+                permissões de acesso ao Goole Calendar
+              </AuthError>
             )}
-          </ModalItem>
 
-          {hasAuthError && (
-            <AuthError size="sm">
-              Falha ao se conectar ao Google, verifique se você habilitou as
-              permissões de acesso ao Goole Calendar
-            </AuthError>
-          )}
-
-          <Button
-            onClick={handleGoToTimeIntervals}
-            disabled={!isSignedIn}>
-            Próximo passo
-            <ArrowRight size={16} />
-          </Button>
-        </Modal>
-      </Header>
-    </Container>
+            <Button
+              onClick={handleGoToTimeIntervals}
+              disabled={!isSignedIn}>
+              Próximo passo
+              <ArrowRight size={16} />
+            </Button>
+          </Modal>
+        </Header>
+      </Container>
+    </>
   )
 }

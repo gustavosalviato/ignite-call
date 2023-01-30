@@ -23,6 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { covertTimeStringToMinutes } from "../../../utils/convert-time-string-to-minutes"
 import { api } from "../../../libs/api"
 import { useRouter } from 'next/router'
+import { NextSeo } from "next-seo"
 const timeIntervalsFormSchema = z.object({
   intervals: z
     .array(
@@ -101,76 +102,80 @@ export default function TimeIntervals() {
     await router.push('/register/update-profile')
   }
   return (
-    <Container>
-      <Header>
-        <Heading>Quase lá</Heading>
 
-        <Text>
-          Defina o intervalo de horários que você está disponível em cada dia da
-          semana.
-        </Text>
+    <>
+      <NextSeo title="Defina o intervalo que você está disponível em cada dia | Ignite Call" noindex />
+      <Container>
+        <Header>
+          <Heading>Quase lá</Heading>
 
-        <MultiStep size={4} currentStep={3} />
-      </Header>
-      <BoxContainer
-        as="form"
-        onSubmit={handleSubmit(handleSubmitIntervalsForm)}
-      >
-        <BoxContent>
-          {fields.map((field, index) => (
-            <BoxItem key={field.id}>
-              <BoxDay>
-                <Controller
-                  name={`intervals.${index}.enabled`}
-                  control={control}
-                  render={({ field }) => {
-                    return (
-                      <Checkbox
-                        onCheckedChange={(checked) => {
-                          field.onChange(checked === true)
-                        }}
-                        checked={field.value}
-                      />
-                    )
-                  }}
-                />
+          <Text>
+            Defina o intervalo de horários que você está disponível em cada dia da
+            semana.
+          </Text>
 
-                <Text>{weekDay[field.weekDay]}</Text>
-              </BoxDay>
-              <BoxTime>
-                <TextInput
-                  size="sm"
-                  type="time"
-                  step={60}
-                  {...register(`intervals.${index}.startTime`)}
-                  disabled={watchIntervals[index].enabled === false}
-                />
-                <TextInput
-                  size="sm"
-                  type="time"
-                  step={60}
-                  {...register(`intervals.${index}.endTime`)}
-                  disabled={watchIntervals[index].enabled === false}
-                />
-              </BoxTime>
-            </BoxItem>
-          ))}
-        </BoxContent>
-
-        {errors.intervals?.message && (
-          <FormErrorMessage size="sm">
-            {errors.intervals.message}
-          </FormErrorMessage>
-        )}
-
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          onClick={handleGoToUpdateProfile}
+          <MultiStep size={4} currentStep={3} />
+        </Header>
+        <BoxContainer
+          as="form"
+          onSubmit={handleSubmit(handleSubmitIntervalsForm)}
         >
-          Próximo Passo <ArrowRight />
-        </Button>
-      </BoxContainer>
-    </Container>
+          <BoxContent>
+            {fields.map((field, index) => (
+              <BoxItem key={field.id}>
+                <BoxDay>
+                  <Controller
+                    name={`intervals.${index}.enabled`}
+                    control={control}
+                    render={({ field }) => {
+                      return (
+                        <Checkbox
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked === true)
+                          }}
+                          checked={field.value}
+                        />
+                      )
+                    }}
+                  />
+
+                  <Text>{weekDay[field.weekDay]}</Text>
+                </BoxDay>
+                <BoxTime>
+                  <TextInput
+                    size="sm"
+                    type="time"
+                    step={60}
+                    {...register(`intervals.${index}.startTime`)}
+                    disabled={watchIntervals[index].enabled === false}
+                  />
+                  <TextInput
+                    size="sm"
+                    type="time"
+                    step={60}
+                    {...register(`intervals.${index}.endTime`)}
+                    disabled={watchIntervals[index].enabled === false}
+                  />
+                </BoxTime>
+              </BoxItem>
+            ))}
+          </BoxContent>
+
+          {errors.intervals?.message && (
+            <FormErrorMessage size="sm">
+              {errors.intervals.message}
+            </FormErrorMessage>
+          )}
+
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            onClick={handleGoToUpdateProfile}
+          >
+            Próximo Passo <ArrowRight />
+          </Button>
+        </BoxContainer>
+      </Container>
+    </>
   )
 }
