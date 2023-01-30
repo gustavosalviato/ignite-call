@@ -1,25 +1,57 @@
 import { Button, Text, TextArea, TextInput } from "@ignite-ui/react";
-import { Calendar, Clock } from "phosphor-react";
+import { Calendar, Clock, UsersFour } from "phosphor-react";
 import { Container, FormActions, FormError, Header } from "./styles";
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
+import { api } from "../../../../../libs/api";
+import { useRouter } from 'next/router'
+import { config } from "process";
+
 const confirmFormSchema = z.object({
   name: z.string().min(3, { message: 'Nome dever conter pelo menos 3 letras' }),
   email: z.string().email({ message: 'Digite  um e-mail válido' }),
   observations: z.string().nullable(),
 })
 
+interface ConfirmFormProps {
+  schedulingDateTime: Date
+  onCancelForm: () => void
+}
+
 type confirmFormData = z.infer<typeof confirmFormSchema>
-export function ConfirmForm() {
+export function ConfirmForm({ schedulingDateTime, onCancelForm }: ConfirmFormProps) {
+
+  const router = useRouter()
+
+  const username = String(router.query.username)
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<confirmFormData>({
     resolver: zodResolver(confirmFormSchema)
   })
 
-  function handleConfirmForm(data: confirmFormData) {
-    console.log(data)
+
+  async function handleConfirmForm(data: confirmFormData) {
+    const { email, name, observations } = data
+    try {
+      await api.post(`/users/${username}/schedule`, {
+        email,
+        name,
+        observations,
+        date: schedulingDateTime
+      })
+
+      onCancelForm()
+    } catch (err) {
+      console.log(err)
+    }
   }
+
+
+  const describedDate = dayjs(schedulingDateTime).format('DD [de] MMMM [de] YYYY')
+  const formateddHour = dayjs(schedulingDateTime).format('HH[:]mm[h]')
+
   return (
     <Container
       as="form"
@@ -28,12 +60,12 @@ export function ConfirmForm() {
       <Header>
         <Text>
           <Calendar />
-          22 de Setembro de 2022
+          {describedDate}
         </Text>
 
         <Text>
           <Clock />
-          18:00h
+          {formateddHour}
         </Text>
       </Header>
 
@@ -61,7 +93,15 @@ export function ConfirmForm() {
       </label>
 
       <FormActions>
-        <Button type="button" variant="tertiary">Cancelar</Button>
+        <Button
+          type="button"
+          variant="tertiary"
+          onClick={() => onCancelForm()}
+        >
+          Cancelar
+        </Button>
+
+
         <Button
           type="submit"
           disabled={isSubmitting}

@@ -1,0 +1,67 @@
+import dayjs from "dayjs";
+import { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "../../../../libs/prisma";
+import * as z from 'zod'
+
+const scheduleBodyData = z.object({
+  name: z.string(),
+  email: z.string(),
+  observations: z.string(),
+  date: z.string().datetime()
+})
+
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") {
+    return res.status(405).end()
+  }
+
+  const username = String(req.query.username)
+
+  const user = await prisma.user.findUnique({
+    where: {
+      username,
+    }
+  })
+
+  if (!user) {
+    return res.status(404).json({ message: 'User does not exists' })
+  }
+
+  const { date, email, name, observations } = scheduleBodyData.parse(req.body)
+
+  const schedulingDate = dayjs(date).startOf('hour')
+
+  if (schedulingDate.isBefore(new Date())) {
+    return res.status(400).json({
+      message: 'Date is in the past'
+    })
+  }
+
+  const conflictScheduling = await prisma.scheduling.findFirst({
+    where: {
+      user_id: user.id,
+      date: schedulingDate.toDate()
+    }
+  })
+
+  if (conflictScheduling) {
+    return res.status(400).json({
+      message: 'There is another scheduling at the same time'
+    })
+  }
+
+
+  await prisma.scheduling.create({
+    data: {
+      date: schedulingDate.toDate(),
+      email,
+      name,
+      observations,
+      user_id: user.id
+    }
+  })
+
+  return res.status(201).end()
+
+} 
