@@ -1,17 +1,17 @@
-import { Adapter } from "next-auth/adapters"
-import { NextApiRequest, NextApiResponse, NextPageContext } from "next/types"
-import { prisma } from "../../../libs/prisma"
-import { parseCookies, destroyCookie } from "nookies"
+import { Adapter } from 'next-auth/adapters'
+import { NextApiRequest, NextApiResponse, NextPageContext } from 'next/types'
+import { prisma } from '../../../libs/prisma'
+import { parseCookies, destroyCookie } from 'nookies'
 
 export function PrismaAdapter(
   req: NextApiRequest | NextPageContext['req'],
-  res: NextApiResponse | NextPageContext['res']
+  res: NextApiResponse | NextPageContext['res'],
 ): Adapter {
   return {
     async createUser(user) {
-      const { "@ignitecall:userId": userIdOnCookies } = parseCookies({ req })
+      const { '@ignitecall:userId': userIdOnCookies } = parseCookies({ req })
       if (!userIdOnCookies) {
-        throw new Error("User ID not found on cookies.")
+        throw new Error('User ID not found on cookies.')
       }
 
       const prismaUser = await prisma.user.update({
@@ -26,8 +26,8 @@ export function PrismaAdapter(
         },
       })
 
-      destroyCookie({ res }, "@ignitecall:userId", {
-        path: "/",
+      destroyCookie({ res }, '@ignitecall:userId', {
+        path: '/',
       })
 
       return {
@@ -148,7 +148,6 @@ export function PrismaAdapter(
           user_id: account.userId,
         },
       })
-      return
     },
     async createSession({ sessionToken, userId, expires }) {
       await prisma.session.create({

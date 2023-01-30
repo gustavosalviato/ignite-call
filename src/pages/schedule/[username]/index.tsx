@@ -1,27 +1,25 @@
-import { Avatar, Heading, Text } from "@ignite-ui/react";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { NextSeo } from "next-seo";
-import { prisma } from "../../../libs/prisma";
-import { ScheduleForm } from "./ScheduleForm";
-import { Container, ProfileHeader } from "./styles";
+import { Avatar, Heading, Text } from '@ignite-ui/react'
+import { GetStaticPaths, GetStaticProps } from 'next'
+import { NextSeo } from 'next-seo'
+import { prisma } from '../../../libs/prisma'
+import { ScheduleForm } from './ScheduleForm'
+import { Container, ProfileHeader } from './styles'
 
-interface Schedule {
+interface ScheduleProps {
   user: {
-    name: string,
-    bio: string,
+    name: string
+    bio: string
     avatarUrl: string
   }
 }
 
-export default function Schedule({ user }: Schedule) {
+export default function Schedule({ user }: ScheduleProps) {
   return (
     <>
       <NextSeo title={`Agendar com ${user.name}| Ignite Call`} />
       <Container>
         <ProfileHeader>
-          <Avatar
-            src={user.avatarUrl}
-          />
+          <Avatar src={user.avatarUrl} />
           <Heading>{user.name}</Heading>
           <Text>{user.bio}</Text>
         </ProfileHeader>
@@ -34,7 +32,7 @@ export default function Schedule({ user }: Schedule) {
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
-    fallback: 'blocking'
+    fallback: 'blocking',
   }
 }
 
@@ -43,15 +41,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   if (!username) {
     return {
-      notFound: true
+      notFound: true,
     }
   }
 
-
   const user = await prisma.user.findUnique({
     where: {
-      username
-    }
+      username,
+    },
   })
 
   return {
@@ -59,9 +56,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       user: {
         name: user?.name,
         bio: user?.bio,
-        avatarUrl: user?.avatar_url
-      }
+        avatarUrl: user?.avatar_url,
+      },
     },
   }
 }
-

@@ -1,10 +1,10 @@
-import { Heading, Text, MultiStep, Button } from "@ignite-ui/react"
-import { ArrowRight, Check } from "phosphor-react"
-import { AuthError, Container, Header, Modal, ModalItem } from "./styles"
-import { signIn } from "next-auth/react"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/router"
-import { NextSeo } from "next-seo"
+import { Heading, Text, MultiStep, Button } from '@ignite-ui/react'
+import { ArrowRight, Check } from 'phosphor-react'
+import { AuthError, Container, Header, Modal, ModalItem } from './styles'
+import { signIn, useSession } from 'next-auth/react'
+
+import { useRouter } from 'next/router'
+import { NextSeo } from 'next-seo'
 
 export default function ConnectCalendar() {
   const router = useRouter()
@@ -13,10 +13,10 @@ export default function ConnectCalendar() {
 
   const session = useSession()
 
-  const isSignedIn = session.status === "authenticated"
+  const isSignedIn = session.status === 'authenticated'
 
   async function handleConnectCalendar() {
-    await signIn("google")
+    await signIn('google')
   }
 
   async function handleGoToTimeIntervals() {
@@ -64,9 +64,7 @@ export default function ConnectCalendar() {
               </AuthError>
             )}
 
-            <Button
-              onClick={handleGoToTimeIntervals}
-              disabled={!isSignedIn}>
+            <Button onClick={handleGoToTimeIntervals} disabled={!isSignedIn}>
               Próximo passo
               <ArrowRight size={16} />
             </Button>

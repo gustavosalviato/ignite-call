@@ -1,6 +1,6 @@
-import { useState } from "react"
-import { CalendarStep } from "./CalendarStep"
-import { ConfirmForm } from "./ConfirmForm"
+import { useState } from 'react'
+import { CalendarStep } from './CalendarStep'
+import { ConfirmForm } from './ConfirmForm'
 
 export function ScheduleForm() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
@@ -18,8 +18,5 @@ export function ScheduleForm() {
     )
   }
 
-
-  return (
-    <CalendarStep onSelectDate={setSelectedDate} />
-  )
+  return <CalendarStep onSelectDate={setSelectedDate} />
 }

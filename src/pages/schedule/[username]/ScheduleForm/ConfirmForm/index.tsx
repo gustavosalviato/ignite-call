@@ -1,13 +1,12 @@
-import { Button, Text, TextArea, TextInput } from "@ignite-ui/react";
-import { Calendar, Clock, UsersFour } from "phosphor-react";
-import { Container, FormActions, FormError, Header } from "./styles";
+import { Button, Text, TextArea, TextInput } from '@ignite-ui/react'
+import { Calendar, Clock } from 'phosphor-react'
+import { Container, FormActions, FormError, Header } from './styles'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import { zodResolver } from "@hookform/resolvers/zod";
-import dayjs from "dayjs";
-import { api } from "../../../../../libs/api";
+import { zodResolver } from '@hookform/resolvers/zod'
+import dayjs from 'dayjs'
+import { api } from '../../../../../libs/api'
 import { useRouter } from 'next/router'
-import { config } from "process";
 
 const confirmFormSchema = z.object({
   name: z.string().min(3, { message: 'Nome dever conter pelo menos 3 letras' }),
@@ -21,16 +20,21 @@ interface ConfirmFormProps {
 }
 
 type confirmFormData = z.infer<typeof confirmFormSchema>
-export function ConfirmForm({ schedulingDateTime, onCancelForm }: ConfirmFormProps) {
-
+export function ConfirmForm({
+  schedulingDateTime,
+  onCancelForm,
+}: ConfirmFormProps) {
   const router = useRouter()
 
   const username = String(router.query.username)
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<confirmFormData>({
-    resolver: zodResolver(confirmFormSchema)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<confirmFormData>({
+    resolver: zodResolver(confirmFormSchema),
   })
-
 
   async function handleConfirmForm(data: confirmFormData) {
     const { email, name, observations } = data
@@ -39,7 +43,7 @@ export function ConfirmForm({ schedulingDateTime, onCancelForm }: ConfirmFormPro
         email,
         name,
         observations,
-        date: schedulingDateTime
+        date: schedulingDateTime,
       })
 
       onCancelForm()
@@ -48,15 +52,13 @@ export function ConfirmForm({ schedulingDateTime, onCancelForm }: ConfirmFormPro
     }
   }
 
-
-  const describedDate = dayjs(schedulingDateTime).format('DD [de] MMMM [de] YYYY')
+  const describedDate = dayjs(schedulingDateTime).format(
+    'DD [de] MMMM [de] YYYY',
+  )
   const formateddHour = dayjs(schedulingDateTime).format('HH[:]mm[h]')
 
   return (
-    <Container
-      as="form"
-      onSubmit={handleSubmit(handleConfirmForm)}
-    >
+    <Container as="form" onSubmit={handleSubmit(handleConfirmForm)}>
       <Header>
         <Text>
           <Calendar />
@@ -69,19 +71,15 @@ export function ConfirmForm({ schedulingDateTime, onCancelForm }: ConfirmFormPro
         </Text>
       </Header>
 
-
       <label>
         <Text size="sm"> Seu nome</Text>
         <TextInput placeholder="John Doe" {...register('name')} />
-        {errors.name && (
-          <FormError size="sm" >{errors.name.message}</FormError>
-        )}
-
+        {errors.name && <FormError size="sm">{errors.name.message}</FormError>}
       </label>
 
       <label>
         <Text size="sm">Endereço de e-mail</Text>
-        <TextInput placeholder="johndoe@gmail.com"  {...register('email')} />
+        <TextInput placeholder="johndoe@gmail.com" {...register('email')} />
         {errors.email && (
           <FormError size="sm">{errors.email.message}</FormError>
         )}
@@ -89,26 +87,18 @@ export function ConfirmForm({ schedulingDateTime, onCancelForm }: ConfirmFormPro
 
       <label>
         <Text size="sm">Observações</Text>
-        <TextArea  {...register('observations')} />
+        <TextArea {...register('observations')} />
       </label>
 
       <FormActions>
-        <Button
-          type="button"
-          variant="tertiary"
-          onClick={() => onCancelForm()}
-        >
+        <Button type="button" variant="tertiary" onClick={() => onCancelForm()}>
           Cancelar
         </Button>
 
-
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-        >
+        <Button type="submit" disabled={isSubmitting}>
           Confirmar
         </Button>
       </FormActions>
-    </Container >
+    </Container>
   )
 }

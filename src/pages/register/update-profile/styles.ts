@@ -1,16 +1,16 @@
-import { Box, Heading, styled, Text } from "@ignite-ui/react";
+import { Box, styled, Text } from '@ignite-ui/react'
 
 export const ProfileBox = styled(Box, {
   display: 'flex',
   flexDirection: 'column',
-  marginTop: "$6",
+  marginTop: '$6',
 
   label: {
     marginBottom: '$2',
     marginTop: '$2',
     fontSize: '$md',
-    fontFamily: '$default'
-  }
+    fontFamily: '$default',
+  },
 })
 
 export const FormAnnotation = styled(Text, {
@@ -27,5 +27,5 @@ export const AvatarImage = styled('div', {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-  }
+  },
 })

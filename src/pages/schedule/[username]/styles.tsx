@@ -1,4 +1,4 @@
-import { Heading, styled, Text } from "@ignite-ui/react";
+import { Heading, styled, Text } from '@ignite-ui/react'
 
 export const Container = styled('div', {
   maxWidth: 852,
@@ -13,10 +13,10 @@ export const ProfileHeader = styled('header', {
 
   [`> ${Heading}`]: {
     marginTop: '$2',
-    lineHeight: '$base'
+    lineHeight: '$base',
   },
 
   [`> ${Text}`]: {
-    color: '$gray200'
-  }
+    color: '$gray200',
+  },
 })
