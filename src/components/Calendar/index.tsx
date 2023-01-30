@@ -35,7 +35,6 @@ export function Calendar({ onSelectedDate, selectedDate }: CalendarProps) {
 
   const formattedCurrentMonth = currentDate.format('MM')
 
-  console.log(formattedCurrentMonth)
 
   const router = useRouter()
 
