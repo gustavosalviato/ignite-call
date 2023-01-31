@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from 'next-auth/next'
-import { buildAuthOptions } from './auth/[...nextauth]'
+import { buildAuthOptions } from './auth/[...nextauth].api'
 import * as z from 'zod'
 import { prisma } from '../../libs/prisma'
 

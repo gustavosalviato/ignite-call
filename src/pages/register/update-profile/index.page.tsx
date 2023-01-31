@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form'
 import { Container, Header } from '../connect-calendar/styles'
 import { FormAnnotation, ProfileBox } from './styles'
 import { GetServerSideProps } from 'next'
-import { buildAuthOptions } from '../../api/auth/[...nextauth]'
+import { buildAuthOptions } from '../../api/auth/[...nextauth].api'
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from 'next-auth/next'
 import { useSession } from 'next-auth/react'

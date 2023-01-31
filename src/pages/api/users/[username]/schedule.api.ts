@@ -35,6 +35,8 @@ export default async function handler(
 
   const schedulingDate = dayjs(date).startOf('hour')
 
+  console.log(schedulingDate.toDate())
+
   if (schedulingDate.isBefore(new Date())) {
     return res.status(400).json({
       message: 'Date is in the past',
